@@ -113,6 +113,10 @@ class ACLManager {
 		$path = ltrim($path, '/');
 		$rules = $this->getRules($this->getParents($path));
 
+		if (empty($rules)) {
+			return 0;
+		}
+
 		return array_reduce($rules, function (int $permissions, array $rules) {
 			$mergedRule = Rule::mergeRules($rules);
 			return $mergedRule->applyPermissions($permissions);
@@ -128,6 +132,10 @@ class ACLManager {
 	public function getPermissionsForTree(string $path): int {
 		$path = ltrim($path, '/');
 		$rules = $this->ruleManager->getRulesForPrefix($this->user, $this->getRootStorageId(), $path);
+
+		if (empty($rules)) {
+			return 0;
+		}
 
 		return array_reduce($rules, function (int $permissions, array $rules) {
 			$mergedRule = Rule::mergeRules($rules);
